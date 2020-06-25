@@ -259,7 +259,7 @@ function getteamById() {
         console.log(data);
         // Menyusun komponen card artikel secara dinamis
         var teamDetails = `
-        <<div class="card mt-2 p2">
+        <div class="card mt-2 p2">
         <div class="row">
           <div class="col s12 m4 center">
             <img src="${data.crestUrl}" class="responsive-img"/>

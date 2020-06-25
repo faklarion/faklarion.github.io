@@ -6,6 +6,42 @@ else
 	console.log(`Workbox gagal dimuat`);
 
 	workbox.routing.registerRoute(
+		new RegExp('https://api.football-data.org/v2/'),
+		workbox.strategies.staleWhileRevalidate({
+			cacheName: 'footballdata',
+			plugins: [
+				new workbox.expiration.Plugin({
+				maxAgeSeconds: 3 * 24 * 60 * 60, // 3 hari
+				}),
+			],
+		})
+	);
+
+	workbox.routing.registerRoute(
+		new RegExp('https://fonts.googleapis.com/icon?family=Material+Icons'),
+		workbox.strategies.staleWhileRevalidate({
+			cacheName: 'fontsmaterial',
+			plugins: [
+				new workbox.expiration.Plugin({
+				maxAgeSeconds: 3 * 24 * 60 * 60, // 3 hari
+				}),
+			],
+		})
+	);
+
+	workbox.routing.registerRoute(
+		new RegExp('https://fonts.gstatic.com/s/materialicons/v52/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2'),
+		workbox.strategies.staleWhileRevalidate({
+			cacheName: 'materialicons',
+			plugins: [
+				new workbox.expiration.Plugin({
+				maxAgeSeconds: 3 * 24 * 60 * 60, // 3 hari
+				}),
+			],
+		})
+	);
+
+	workbox.routing.registerRoute(
 		new RegExp('/pages/'),
 		  workbox.strategies.staleWhileRevalidate({
 			  cacheName: 'pages'
@@ -56,78 +92,6 @@ else
 		{ url: '/js/notif.js', revision: '1' },
 		{ url: '/push.js', revision: '1' },
 	]);
-
-const CACHE_NAME = 'firstpwa-v4';
-var urlsToCache = [
-	'/',
-	'/teamdetails.html',
-	'/manifest.json',
-	'/icon.png',
-	'/nav.html',
-	'/index.html',
-	'/pages/teams.html',
-	'/pages/klasemen.html',
-	'/pages/saved.html',
-	'/css/materialize.css',
-	'/css/materialize.min.css',
-	'/css/style.css',
-	'/css/custom.css',
-	'/js/api.js',
-	'/js/db.js',
-	'/js/idb.js',
-	'/js/notif.js',
-	'/push.js',
-	'/js/materialize.js',
-	'/js/materialize.min.js',
-	'/js/script.js'
-];
-
-self.addEventListener('install', function(event){
-	event.waitUntil(
-		caches.open(CACHE_NAME)
-		.then(function(cache) {
-			return cache.addAll(urlsToCache);
-		})
-	);
-})
-
-self.addEventListener('activate', function(event){
-	event.waitUntil(
-		caches.keys()
-		.then(function(cacheNames) {
-			return Promise.all(
-				cacheNames.map(function(cacheName){
-					if(cacheName != CACHE_NAME){	
-						console.log("ServiceWorker: cache " + cacheName + " dihapus");
-						return caches.delete(cacheName);
-					}
-				})
-			);
-		})
-	);
-})
-
-self.addEventListener('fetch', function(event) {
-	self.addEventListener("fetch", function(event) {
-		var base_url = "https://api.football-data.org/v2/";
-		if (event.request.url.indexOf(base_url) > -1) {
-		  event.respondWith(
-			caches.open(CACHE_NAME).then(function(cache) {
-			  return fetch(event.request).then(function(response) {
-				cache.put(event.request.url, response.clone());
-				return response;
-			  })
-			})
-		  );
-		} else {
-		  event.respondWith(
-			caches.match(event.request, { ignoreSearch: true }).then(function(response) {
-			  return response || fetch (event.request);
-			})
-		  )
-		}
-	  });
-});
 
 self.addEventListener('push', function(event) {
     var body;

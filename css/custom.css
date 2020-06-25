@@ -42,3 +42,10 @@ img.tengah {
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
+@media screen and (min-width: 800px) {
+  .responsive-img {
+    height: 200px;
+    width : 200px;
+  }
+}
